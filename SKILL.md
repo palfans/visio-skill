@@ -149,6 +149,8 @@ Read `references/sequence-format.md` for the full specification. Minimum example
 
 - Use explicit coordinates for predictable layout.
 - Keep diagrams readable: align nodes in rows/columns, leave at least `0.6` to `1.0` inches between shapes, and route left-to-right or top-to-bottom unless the user asks otherwise.
+- ⚠️ **Dynamic Canvas Sizing Rule**: Do **NOT** compress nodes, decrease fonts, or reduce spacings just to squeeze a large diagram into standard page sizes (e.g. 11x8.5 inches). Instead, **dynamically increase the single-page canvas size (`pageWidth`/`pageHeight`)** based on the coordinates and quantity of nodes (e.g., A3 size, or custom dimensions like 15x11 inches, 18x12 inches) to ensure all nodes and connection lines have plenty of breathing room. Each diagram should remain on a single page, but the page canvas size must scale up to fit the content beautifully.
+- ⚠️ **Flowchart "结束" (End) Node Rule**: In flowcharts and process flow diagrams (especially top-to-bottom vertical flows), the final "结束" (End) node must always be placed at the very bottom of the diagram (i.e., having the lowest `y` coordinate). Do not place it to the side or parallel to intermediate steps, ensuring that the visual flow terminates cleanly at the lowest vertical level of the page.
 - Default shape is `roundrect` (rounded rectangle). Default fill is a premium light blue `#EFF6FF` with a border of `#3B82F6`. Default node text is `Microsoft YaHei` at `11 pt`.
 - Default connector line color is slate gray `#475569` with `10 pt` text, automatically using `"textPinX": 0.35` and `"textOffsetY": 0.18` to avoid overlap.
 - Utilize premium, low-saturation pastel colors for different layers/roles (e.g., `#EFF6FF` / `#3B82F6` for main logic, `#ECFDF5` / `#10B981` for start/success, `#FEF3C7` / `#D97706` for storage, `#F5F3FF` / `#8B5CF6` for external API).
@@ -171,6 +173,7 @@ Read `references/sequence-format.md` for the full specification. Minimum example
 - Order messages **chronologically** from top to bottom, representing the actual execution flow.
 - Use `"type": "sync"` for method calls/requests, `"type": "return"` for responses (shown as dashed arrows).
 - Keep message labels **concise but meaningful** (e.g., "POST /login", "Query user", "JWT token").
+- ⚠️ **Sequence Diagram Page Sizing**: For sequence diagrams with many messages or actors, do not squeeze actors or messages by reducing `actorSpacing` or `messageSpacing`. Instead, increase the page dimensions (`pageWidth`/`pageHeight`) of the single page to fit all elements with comfortable margins.
 - For complex flows, limit to **4-6 actors** maximum; split into multiple diagrams if needed.
 - Default spacing is sensible; override `layout.actorSpacing` or `layout.messageSpacing` only if the diagram is too cramped or sparse.
 

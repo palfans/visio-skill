@@ -165,6 +165,22 @@ def add_node(page, node: dict, stencil_map: dict):
     set_font_family(shape, node.get("fontName", "Microsoft YaHei"))
     set_font_size(shape, node.get("fontSize", 11))
 
+    # Text vertical alignment
+    valign = node.get("textVerticalAlign")
+    if valign == "top":
+        try:
+            shape.CellsU("VerticalAlign").ResultIU = 0
+            # Set a small top margin to prevent overlapping border
+            shape.CellsU("TextTopMargin").FormulaU = "0.15 in"
+        except:
+            pass
+    elif valign == "bottom":
+        try:
+            shape.CellsU("VerticalAlign").ResultIU = 2
+            shape.CellsU("TextBottomMargin").FormulaU = "0.15 in"
+        except:
+            pass
+
     # ★ NEW: Handle z-order
     if node.get("sendToBack") or node.get("zOrder") == 0:
         try:
