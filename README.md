@@ -46,7 +46,7 @@
 WSL 里的 Linux Python 无法直接调用 Visio COM，脚本会自动把自己转交给 Windows 侧的 Python 执行，命令保持不变（发行版没有 `python` 别名时用 `python3`）：
 
 ```bash
-python ~/.codebuddy/skills/visio-skill/scripts/New-VisioDiagram.py diagram.json diagram.vsdx
+python ~/.agents/skills/visio-skill/scripts/New-VisioDiagram.py diagram.json diagram.vsdx
 ```
 
 Windows 侧需要一个装有 `pywin32` 的解释器，脚本按下面的顺序探测，取第一个能 `import win32com.client` 的：
@@ -67,7 +67,7 @@ Linux 绝对路径会被转换成 Windows 路径，相对路径沿用当前目�
 ## 安装与使用说明
 
 ### 1. 安装技能
-通常情况下，你只需将本仓库克隆（或下载解压）到你的 AI Agent 约定的 Skills 目录下即可（例如 `~/.cursor/skills/visio-skill` 或 `~/.gemini/antigravity/skills/visio-skill`）。
+通常情况下，你只需将本仓库克隆（或下载解压）到 `~/.agents/skills/visio-skill` 即可。其他 Agent 使用自己的技能目录时，把路径换成对应目录（例如 `~/.cursor/skills/visio-skill`）。
 *注意：请保持现有的目录结构。AI 会以 `SKILL.md` 为统一入口，并在后台自主调用 `scripts` 和 `references` 等目录下的文件。*
 
 ### 2. 使用方法

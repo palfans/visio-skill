@@ -10,7 +10,7 @@ Version 4.0 also reconstructs editable Visio diagrams from static PNG/JPG images
 
 ## Installation
 
-1. Clone or download the repository into your AI Agent's skills directory (e.g., `~/.cursor/skills/visio-skill` or `~/.gemini/antigravity/skills/visio-skill`).
+1. Clone or download the repository into `~/.agents/skills/visio-skill`. Agents that use a different skills directory should substitute their own path (e.g., `~/.cursor/skills/visio-skill`).
 2. Keep the directory structure intact – the skill entry point is `SKILL.md`, and supporting scripts reside in `scripts/`.
 
 ---
