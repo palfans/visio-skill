@@ -34,7 +34,7 @@
         {
           "id": "firewall",
           "stencil": "network",
-          "master": "网关",
+          "master": "Gateway",
           "text": "边界防火墙",
           "x": 3.5,
           "y": 6.5,
@@ -44,7 +44,7 @@
         {
           "id": "router",
           "stencil": "network",
-          "master": "路由器",
+          "master": "Router",
           "text": "核心路由器",
           "x": 5.5,
           "y": 6.5,
@@ -54,7 +54,7 @@
         {
           "id": "switch1",
           "stencil": "network",
-          "master": "工作组交换机",
+          "master": "Workgroup switch",
           "text": "楼层交换机A",
           "x": 4,
           "y": 4.5,
@@ -64,7 +64,7 @@
         {
           "id": "switch2",
           "stencil": "network",
-          "master": "工作组交换机",
+          "master": "Workgroup switch",
           "text": "楼层交换机B",
           "x": 7,
           "y": 4.5,
@@ -74,7 +74,7 @@
         {
           "id": "webserver",
           "stencil": "server",
-          "master": "Web 服务器",
+          "master": "Web server",
           "text": "Web服务器",
           "x": 2.5,
           "y": 2.5,
@@ -84,7 +84,7 @@
         {
           "id": "dbserver",
           "stencil": "server",
-          "master": "数据库服务器",
+          "master": "Database server",
           "text": "数据库",
           "x": 5,
           "y": 2.5,
@@ -104,7 +104,7 @@
         {
           "id": "client2",
           "stencil": "computer",
-          "master": "笔记本电脑",
+          "master": "Laptop computer",
           "text": "员工笔记本-02",
           "x": 9,
           "y": 2.8,
@@ -114,7 +114,7 @@
         {
           "id": "printer",
           "stencil": "server",
-          "master": "打印服务器",
+          "master": "Print server",
           "text": "网络打印机",
           "x": 9,
           "y": 4.5,

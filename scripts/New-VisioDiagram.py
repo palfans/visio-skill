@@ -9,11 +9,12 @@ Version: 2.0 (with auto-layout engine)
 """
 
 import argparse
+import glob
 import json
 import os
 import sys
 
-import win32com.client
+from windows_bridge import ensure_windows_runtime
 
 # Import layout engine modules
 try:
@@ -60,7 +61,33 @@ def set_font_family(shape, name: str):
 
 # ── Stencil loading ───────────────────────────────────────────
 
-DEFAULT_STENCIL_PATH = r"C:\Program Files\Microsoft Office\root\Office16\Visio Content\2052"
+STENCIL_CONTENT_GLOBS = [
+    r"C:\Program Files\Microsoft Office\root\Office*\Visio Content",
+    r"C:\Program Files (x86)\Microsoft Office\root\Office*\Visio Content",
+]
+
+
+def stencil_dirs() -> list[str]:
+    dirs = []
+    for pattern in STENCIL_CONTENT_GLOBS:
+        for content_dir in sorted(glob.glob(pattern), reverse=True):
+            for language in sorted(os.listdir(content_dir)):
+                candidate = os.path.join(content_dir, language)
+                if os.path.isdir(candidate):
+                    dirs.append(candidate)
+    return dirs
+
+
+def resolve_stencil_file(filename: str) -> str | None:
+    if os.path.isabs(filename):
+        return filename if os.path.exists(filename) else None
+    if os.path.exists(filename):
+        return os.path.abspath(filename)
+    for directory in stencil_dirs():
+        candidate = os.path.join(directory, filename)
+        if os.path.exists(candidate):
+            return candidate
+    return None
 
 
 def load_stencils(visio, stencil_specs: list) -> dict:
@@ -72,15 +99,9 @@ def load_stencils(visio, stencil_specs: list) -> dict:
         sid = spec["id"]
         filename = spec["file"]
 
-        if os.path.isabs(filename):
-            full = filename
-        elif os.path.exists(filename):
-            full = os.path.abspath(filename)
-        else:
-            full = os.path.join(DEFAULT_STENCIL_PATH, filename)
-
-        if not os.path.exists(full):
-            print(f"WARNING: Stencil file not found: {full}", file=sys.stderr)
+        full = resolve_stencil_file(filename)
+        if full is None:
+            print(f"WARNING: Stencil file not found: {filename}", file=sys.stderr)
             continue
 
         try:
@@ -93,19 +114,18 @@ def load_stencils(visio, stencil_specs: list) -> dict:
 
 
 def get_master(stencil, master_name: str):
-    try:
-        return stencil.Masters.Item(master_name)
-    except Exception:
-        available = []
-        for i in range(1, min(stencil.Masters.Count, 10) + 1):
-            try:
-                available.append(stencil.Masters.Item(i).Name)
-            except Exception:
-                pass
-        raise ValueError(
-            f"Master '{master_name}' not found in '{stencil.Name}'. "
-            f"Available (first 10): {', '.join(available)}"
-        )
+    masters = stencil.Masters
+    wanted = master_name.lower()
+    for index in range(1, masters.Count + 1):
+        master = masters.Item(index)
+        if wanted in (master.Name.lower(), master.NameU.lower()):
+            return master
+
+    available = [masters.Item(i).Name for i in range(1, min(masters.Count, 10) + 1)]
+    raise ValueError(
+        f"Master '{master_name}' not found in '{stencil.Name}'. "
+        f"Available (first 10): {', '.join(available)}"
+    )
 
 
 # ── Node drawing ──────────────────────────────────────────────
@@ -225,6 +245,8 @@ def add_connection(visio, page, shapes_by_id: dict, conn: dict):
     connector.CellsU("TxtPinY").FormulaU = f"Height*0.5+{toy} in"
     if conn.get("lineWeight") is not None:
         connector.CellsU("LineWeight").FormulaU = f"{float(conn['lineWeight'])} pt"
+    if conn.get("dash"):
+        connector.CellsU("LinePattern").ResultIU = int(conn["dash"])
     end_arrow = int(conn.get("endArrow", 4))
     connector.CellsU("EndArrow").ResultIU = end_arrow
     if conn.get("beginArrow") is not None:
@@ -355,6 +377,8 @@ def add_sequence_diagram(visio, page, spec: dict):
 # ── Main ──────────────────────────────────────────────────────
 
 def main():
+    import win32com.client
+
     parser = argparse.ArgumentParser(description="Generate Visio .vsdx from JSON spec")
     parser.add_argument("spec", help="Path to JSON spec file")
     parser.add_argument("output", help="Output .vsdx path")
@@ -489,4 +513,5 @@ def main():
 
 
 if __name__ == "__main__":
+    ensure_windows_runtime(__file__)
     main()

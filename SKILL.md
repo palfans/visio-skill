@@ -15,6 +15,10 @@ python "<skill>/scripts/New-VisioDiagram.py" "<diagram.json>" "<diagram.vsdx>"
 
 Create a JSON spec first, then run the script. Keep output files in the user's requested folder, or in the active workspace when unspecified.
 
+### WSL
+
+Inside WSL the scripts re-execute themselves with a Windows Python that can import `win32com.client`, so the commands above stay unchanged; use `python3` when the distro has no `python` alias. The launcher tries `VISIO_PYTHON`, then `%USERPROFILE%\.venvs\visio-skill\Scripts\python.exe`, then common Python installs, and stops with the list of interpreters it tried when none of them has `pywin32`. Linux absolute paths are converted to Windows paths automatically and relative paths keep the current directory, so output can live on either filesystem. Visio must run in the interactive desktop session; COM automation fails from a plain SSH shell.
+
 ### RTL / Verilog Logic Block Diagrams
 
 When the user provides Verilog sources or asks for an FPGA / RTL logic block diagram, prefer the deterministic RTL generator instead of manually writing a JSON layout:
@@ -80,8 +84,8 @@ To use professional Visio stencil icons (network devices, servers, computers, et
     { "id": "server", "file": "SERVER_M.VSSX" }
   ],
   "nodes": [
-    { "id": "router1", "stencil": "network", "master": "路由器", "text": "Core Router", "x": 2, "y": 5 },
-    { "id": "srv1", "stencil": "server", "master": "服务器", "text": "Web Server", "x": 5, "y": 5 }
+    { "id": "router1", "stencil": "network", "master": "Router", "text": "Core Router", "x": 2, "y": 5 },
+    { "id": "srv1", "stencil": "server", "master": "Server", "text": "Web Server", "x": 5, "y": 5 }
   ]
 }
 ```
@@ -91,9 +95,11 @@ To use professional Visio stencil icons (network devices, servers, computers, et
 - **Full catalog**: `references/visio-stencil-index.md` — All 362 built-in Visio stencils
 
 Most commonly used stencils:
-- `NETSYM_M.VSSX` (24 masters) - Network symbols (路由器, 工作组交换机, 网桥, 网关)
-- `SERVER_M.VSSX` (17 masters) - Servers (Web 服务器, 数据库服务器, 应用程序服务器)
-- `COMPS_M.VSSX` (10 masters) - Computers and monitors (PC, 笔记本电脑, 平板电脑)
+- `NETSYM_M.VSSX` (24 masters) - Network symbols (Router, Workgroup switch, Bridge, Gateway)
+- `SERVER_M.VSSX` (17 masters) - Servers (Web server, Database server, Application server)
+- `COMPS_M.VSSX` (10 masters) - Computers and monitors (PC, Laptop computer, Tablet computer)
+
+Write `master` with the universal English name; it resolves on every language pack. The script compares the value against both `Name` and `NameU` ignoring case, so localized names still work on a matching install.
 
 ### 2. Sequence Diagrams (UML interaction diagrams)
 

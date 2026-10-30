@@ -21,6 +21,8 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from windows_bridge import ensure_windows_runtime
+
 
 DATA_COLOR = "#2563EB"
 CONTROL_COLOR = "#F97316"
@@ -503,7 +505,7 @@ def main() -> None:
     json_path.write_text(json.dumps(spec, ensure_ascii=False, indent=2), encoding="utf-8")
 
     renderer = Path(__file__).with_name("New-VisioDiagram.py")
-    subprocess.run([sys.executable, str(renderer), str(json_path), str(output), "--no-layout"], check=True)
+    subprocess.run([sys.executable, "-X", "utf8", str(renderer), str(json_path), str(output), "--no-layout"], check=True)
     if args.preview:
         export_preview(output, Path(args.preview))
     print(f"Top module: {top.name}")
@@ -515,4 +517,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    ensure_windows_runtime(__file__)
     main()

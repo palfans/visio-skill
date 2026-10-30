@@ -4,6 +4,8 @@
 
 共找到 362 个模板文件
 
+> 图标名称是中文版 Office（2052）的本地化名称。英文版或其他语言包上同一模板文件的图标名称会不同，请用 `stencil-reference.md` 里的发现脚本按 `NameU` 核对后再写进 `master`。
+
 ---
 
 ## 1. ACCESSBILITY_NEW_M.VSSX

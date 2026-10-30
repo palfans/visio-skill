@@ -120,7 +120,16 @@ After execution, verify that the `.vsdx` file exists and is non‑empty. If need
 
 The skill relies on the Windows‑only Visio COM API and requires Python 3.10+ with `pywin32` (`pip install pywin32`). Image reconstruction additionally requires `opencv-python` and `numpy` (`pip install opencv-python numpy`). OCR is optional: install `pytesseract` and a local Tesseract runtime when automatic text extraction is needed. Without OCR, the agent-assisted overlay mode can still reconstruct labels.
 
-The skill will not run on macOS or Linux without a Windows VM or remote execution environment. In such cases, consider alternative formats like Mermaid, SVG, or draw.io.
+Under WSL the scripts forward themselves to a Windows interpreter, so the documented commands stay unchanged. The launcher tries `VISIO_PYTHON`, then `%USERPROFILE%\.venvs\visio-skill\Scripts\python.exe`, then common Python installs, and picks the first one that can `import win32com.client`:
+
+```powershell
+python.exe -m venv %USERPROFILE%\.venvs\visio-skill
+%USERPROFILE%\.venvs\visio-skill\Scripts\python.exe -m pip install pywin32 opencv-python numpy
+```
+
+Linux absolute paths are converted to Windows paths automatically, relative paths keep the current directory, and output can be written to either filesystem. Visio must run in the interactive desktop session; COM automation fails from a plain SSH shell.
+
+macOS and Linux hosts without Windows cannot run this skill. In such cases, consider alternative formats like Mermaid, SVG, or draw.io.
 
 ---
 

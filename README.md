@@ -33,13 +33,36 @@
 
 ## 环境要求
 
-- **Windows 操作系统**
+- **Windows 操作系统**，或 Windows 上的 WSL
 - 本地已安装 **Microsoft Visio**，且能够正常调用 COM 接口。
 - **Python 3.10+** 及 `pywin32` 包（`pip install pywin32`）
 - 如需使用图片反推功能：安装 `opencv-python`、`numpy`（`pip install opencv-python numpy`）
 - 如需自动 OCR：可选安装 `pytesseract` 和本地 Tesseract Runtime；未安装时仍可通过 Agent 辅助覆盖模式完成文字复刻
 
 *(如需验证 Visio COM 接口是否可用，可在 Python 中运行：`import win32com.client; win32com.client.Dispatch("Visio.Application")`)*
+
+### 在 WSL 中使用
+
+WSL 里的 Linux Python 无法直接调用 Visio COM，脚本会自动把自己转交给 Windows 侧的 Python 执行，命令保持不变（发行版没有 `python` 别名时用 `python3`）：
+
+```bash
+python ~/.codebuddy/skills/visio-skill/scripts/New-VisioDiagram.py diagram.json diagram.vsdx
+```
+
+Windows 侧需要一个装有 `pywin32` 的解释器，脚本按下面的顺序探测，取第一个能 `import win32com.client` 的：
+
+1. 环境变量 `VISIO_PYTHON` 指向的 `python.exe`
+2. `%USERPROFILE%\.venvs\visio-skill\Scripts\python.exe`
+3. `C:\Program Files\Python3*\python.exe` 等常见安装位置
+
+推荐先建一个专用环境：
+
+```powershell
+python.exe -m venv %USERPROFILE%\.venvs\visio-skill
+%USERPROFILE%\.venvs\visio-skill\Scripts\python.exe -m pip install pywin32 opencv-python numpy
+```
+
+Linux 绝对路径会被转换成 Windows 路径，相对路径沿用当前目录，输出可以写到 WSL 目录，也可以写到 C 盘。Visio 需要运行在当前登录的桌面会话里，纯 SSH 会话下 COM 自动化会失败。
 
 ## 安装与使用说明
 

@@ -10,7 +10,7 @@
     {
       "id": "router1",
       "stencil": "network",
-      "master": "路由器",
+      "master": "Router",
       "text": "测试路由器",
       "x": 3,
       "y": 5

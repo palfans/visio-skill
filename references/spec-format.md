@@ -156,6 +156,7 @@ Optional connector refinements:
 
 - `textOffsetX`: move the connector label horizontally in inches.
 - `lineWeight`: set connector thickness in points. Use a heavier line for data buses.
+- `dash`: set the connector line pattern; `2` draws a dashed line.
 
 ## Free Lines and Labels
 

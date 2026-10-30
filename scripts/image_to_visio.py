@@ -21,6 +21,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+from windows_bridge import ensure_windows_runtime
+
+ensure_windows_runtime(__file__)
+
 import cv2
 import numpy as np
 
@@ -223,7 +227,7 @@ def detect_lines(binary, shapes, mode: str):
     if raw is None:
         return []
     candidates = []
-    for item in raw[:, 0, :]:
+    for item in raw.reshape(-1, 4):
         line = normalized_line(item)
         x1, y1, x2, y2 = line
         if abs(x2 - x1) < min_length and abs(y2 - y1) < min_length:
@@ -251,7 +255,7 @@ def infer_mode(image) -> str:
     )
     if raw is None:
         return "diagram"
-    merged = merge_lines([normalized_line(item) for item in raw[:, 0, :]])
+    merged = merge_lines([normalized_line(item) for item in raw.reshape(-1, 4)])
     horizontal = [
         line for line in merged
         if line[1] == line[3] and abs(line[2] - line[0]) >= width * 0.35
@@ -415,7 +419,7 @@ def main():
     json_path.write_text(json.dumps(spec, ensure_ascii=False, indent=2), encoding="utf-8")
 
     renderer = Path(__file__).with_name("New-VisioDiagram.py")
-    subprocess.run([sys.executable, str(renderer), str(json_path), str(output), "--no-layout"], check=True)
+    subprocess.run([sys.executable, "-X", "utf8", str(renderer), str(json_path), str(output), "--no-layout"], check=True)
     if args.preview:
         export_preview(output, Path(args.preview))
     stats = spec["reconstruction"]

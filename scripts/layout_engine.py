@@ -416,11 +416,12 @@ def validate_spec(spec: Dict) -> Tuple[bool, List[str]]:
     """
     errors = []
 
-    if 'pages' not in spec:
-        errors.append("缺少 'pages' 字段")
-        return (False, errors)
+    if spec.get('type') == 'sequence':
+        return (True, errors)
 
-    for i, page in enumerate(spec['pages']):
+    pages = spec.get('pages', [spec])
+
+    for i, page in enumerate(pages):
         if 'nodes' not in page:
             errors.append(f"页面 {i} 缺少 'nodes' 字段")
             continue
